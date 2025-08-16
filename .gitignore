@@ -1,0 +1,28 @@
+# Helm build artifacts
+*.tgz
+chartmuseum/
+charts/
+tmp/
+
+# Values overrides
+values.override.yaml
+values.local.yaml
+values.dev.yaml
+values.prod.yaml
+*.secret.yaml
+
+# Editor / OS cruft
+*.swp
+*.bak
+*.tmp
+*.orig
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log

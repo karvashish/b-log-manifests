@@ -1,0 +1,67 @@
+postgresql:
+  architecture: standalone
+  global:
+    storageClass: ""
+  auth:
+    username: app
+    password: apppass
+    postgresPassword: adminpass
+    database: app
+  primary:
+    persistence:
+      enabled: true
+      size: 5Gi
+      storageClass: ""
+      accessModes: [ReadWriteOnce]
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+nats:
+  nats:
+    jetstream:
+      enabled: true
+      domain: prod
+      fileStore:
+        pvc:
+          enabled: true
+          size: 8Gi
+          storageClassName: ""
+          accessModes: [ReadWriteOnce]
+    cluster:
+      enabled: true
+      replicas: 1
+    auth:
+      enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+  natsBox:
+    enabled: false
+  prometheus:
+    enabled: true
+
+
+image:
+  repository: kartikeyavashishtha/b-log
+  tag: latest
+  pullPolicy: IfNotPresent
+
+app:
+  port: 8080
+  seedBlog: true
+
+service:
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  path: /

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "b_log.fullname" . }}
+  labels:
+    {{- include "b_log.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "b_log.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "b_log.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              value: {{ printf "postgres://%s?sslmode=disable" (include "b_log.postgresql.conn" .) | quote }}
+            - name: NATS_URL
+              value: {{ printf "nats://%s:4222" (include "b_log.nats.host" .) | quote }}
+            - name: PORT
+              value: {{ .Values.app.port | quote }}
+            - name: SEED_ENABLED
+              value: {{ .Values.app.seedBlog | quote }}

@@ -1,0 +1,1 @@
+nats -s "nats://b-log-nats:4222" sub 'b_log.uploaded'

@@ -21,30 +21,26 @@ postgresql:
         memory: 1Gi
 
 nats:
-  nats:
+  config:
+    cluster:
+      enabled: false
     jetstream:
       enabled: true
-      domain: prod
       fileStore:
         pvc:
           enabled: true
           size: 8Gi
           storageClassName: ""
-          accessModes: [ReadWriteOnce]
-    cluster:
-      enabled: true
-      replicas: 1
-    auth:
-      enabled: false
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        memory: 512Mi
+          accessModes:
+            - ReadWriteOnce
+    merge:
+      jetstream:
+        domain: prod
+
   natsBox:
-    enabled: false
-  prometheus:
+    enabled: true
+
+  promExporter:
     enabled: true
 
 

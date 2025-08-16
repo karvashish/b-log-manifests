@@ -38,7 +38,7 @@ nats:
         domain: prod
 
   natsBox:
-    enabled: true
+    enabled: false
 
   promExporter:
     enabled: true

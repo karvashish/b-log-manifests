@@ -21,7 +21,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.app.port }}
           env:
             - name: DATABASE_URL
               value: {{ printf "postgres://%s?sslmode=disable" (include "b_log.postgresql.conn" .) | quote }}

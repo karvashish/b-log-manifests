@@ -51,11 +51,12 @@ nats:
 image:
   repository: kartikeyavashishtha/b-log
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 app:
   port: 8080
   seedBlog: true
+  standaloneStartup: false
 
 service:
   port: 80

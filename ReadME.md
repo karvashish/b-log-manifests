@@ -135,3 +135,11 @@ Steps:
 ```
    curl http://<NODE-IP>:30611/
 ```
+
+# NATS client (4222)
+kubectl -n b-log port-forward svc/b-log-nats 4222:4222
+
+
+# PostgreSQL (5432)
+kubectl -n b-log port-forward svc/b-log-postgresql 5432:5432
+

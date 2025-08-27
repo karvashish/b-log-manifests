@@ -98,8 +98,11 @@ kubectl -n $NS exec -it deploy/$BOX -- nats -s nats://$SVC:4222 --js-domain prod
 1. Make sure `uploads.pv.enabled=true` in your values.yaml.
 2. Create a folder on your PC to hold the uploads (e.g. $HOME/b-log-uploads).
 3. Start a mount so Minikube maps that folder into the VM:
+```
    minikube mount "$HOME/b-log-uploads:/mnt/minikube-uploads"
+```
    (keep this process running in its own terminal).
+
 4. The app in the cluster will write to /app/tmp/uploads, which goes through the PVC/PV and ends up in $HOME/b-log-uploads.
 5. Run the worker locally with SHARED_DIR=$HOME/b-log-uploads so it sees the same files.
 
@@ -112,6 +115,7 @@ Steps:
    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && helm repo update
 
 2) Install or upgrade the controller, pinning NodePorts and the class name “nginx”.
+```
    helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx --create-namespace `
      --set controller.ingressClass=nginx `
      --set controller.ingressClassResource.enabled=true `
@@ -120,10 +124,14 @@ Steps:
      --set controller.service.nodePorts.http=30611 `
      --set controller.service.nodePorts.https=31361 `
      --set defaultBackend.enabled=true
+```
 
 3) Get the node IP.
+```
    kubectl get nodes -o wide
+```
 
 4) Test from your host:
+```
    curl http://<NODE-IP>:30611/
-
+```

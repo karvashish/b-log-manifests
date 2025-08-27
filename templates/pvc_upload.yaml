@@ -1,0 +1,51 @@
+{{- if .Values.uploads.pv.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.uploads.pv.name }}
+  labels:
+    app.kubernetes.io/name: {{ include "b_log.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  capacity:
+    storage: {{ .Values.uploads.pv.size }}
+  accessModes:
+    {{- range .Values.uploads.pv.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
+  persistentVolumeReclaimPolicy: {{ .Values.uploads.pv.reclaimPolicy }}
+  {{- if .Values.uploads.pv.storageClassName }}
+  storageClassName: {{ .Values.uploads.pv.storageClassName }}
+  {{- else }}
+  storageClassName: ""
+  {{- end }}
+  hostPath:
+    path: {{ .Values.uploads.pv.hostPath }}
+    type: {{ .Values.uploads.pv.hostPathType }}
+{{- end }}
+
+{{- if .Values.uploads.pvc.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.uploads.pvc.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "b_log.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  accessModes:
+    {{- range .Values.uploads.pvc.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.uploads.pvc.size }}
+  storageClassName: {{ include "b_log.uploads.storageClass" . }}
+  {{- if .Values.uploads.pvc.volumeName }}
+  volumeName: {{ .Values.uploads.pvc.volumeName }}
+  {{- else if .Values.uploads.pv.enabled }}
+  volumeName: {{ .Values.uploads.pv.name }}
+  {{- end }}
+{{- end }}

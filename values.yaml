@@ -43,7 +43,6 @@ nats:
   promExporter:
     enabled: true
 
-
 image:
   repository: kartikeyavashishtha/b-log
   tag: latest
@@ -62,3 +61,23 @@ ingress:
   className: nginx
   annotations: {}
   path: /
+
+uploads:
+  pv:
+    enabled: true
+    name: uploads-pv
+    size: 5Gi
+    accessModes: ["ReadWriteMany"]
+    reclaimPolicy: Retain
+    storageClassName: ""
+    hostPath: /mnt/minikube-uploads
+    hostPathType: DirectoryOrCreate
+
+  pvc:
+    enabled: true
+    name: uploads-pvc
+    size: 5Gi
+    accessModes: ["ReadWriteMany"]
+    storageClassName: ""
+    volumeName: ""
+  mountPath: /app/tmp/uploads

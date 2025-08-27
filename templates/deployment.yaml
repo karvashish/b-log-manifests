@@ -33,3 +33,14 @@ spec:
               value: {{ .Values.app.seedBlog | quote }}
             - name: STANDALONE
               value: {{ .Values.app.standaloneStartup | quote }}
+          volumeMounts:
+            {{- if .Values.uploads.pvc.enabled }}
+            - name: uploads
+              mountPath: {{ .Values.uploads.mountPath | quote }}
+            {{- end }}
+      volumes:
+        {{- if .Values.uploads.pvc.enabled }}
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: {{ .Values.uploads.pvc.name }}
+        {{- end }}

@@ -34,3 +34,17 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
 {{- $d := .Values.postgresql.auth.database -}}
 {{ printf "%s:%s@%s:5432/%s" $u $p $h $d }}
 {{- end -}}
+
+
+{{/*
+Return the storageClassName for uploads PVC depending on pv.enabled.
+If pv.enabled=true → ""
+If pv.enabled=false → .Values.uploads.pvc.storageClassName
+*/}}
+{{- define "b_log.uploads.storageClass" -}}
+{{- if .Values.uploads.pv.enabled -}}
+""
+{{- else -}}
+{{ default "standard" .Values.uploads.pvc.storageClassName | quote }}
+{{- end -}}
+{{- end }}

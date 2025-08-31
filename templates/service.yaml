@@ -9,6 +9,7 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "b_log.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: app
   ports:
     - name: http
       port: {{ .Values.service.port }}

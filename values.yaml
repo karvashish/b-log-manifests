@@ -1,7 +1,5 @@
 postgresql:
   architecture: standalone
-  global:
-    storageClass: ""
   auth:
     username: app
     password: apppass
@@ -11,7 +9,6 @@ postgresql:
     persistence:
       enabled: true
       size: 5Gi
-      storageClass: ""
       accessModes: [ReadWriteOnce]
     resources:
       requests:
@@ -30,7 +27,6 @@ nats:
         pvc:
           enabled: true
           size: 8Gi
-          storageClassName: ""
           accessModes:
             - ReadWriteOnce
     merge:
@@ -64,12 +60,11 @@ ingress:
 
 uploads:
   pv:
-    enabled: true
+    enabled: false
     name: uploads-pv
     size: 5Gi
     accessModes: ["ReadWriteMany"]
     reclaimPolicy: Retain
-    storageClassName: ""
     hostPath: /mnt/minikube-uploads
     hostPathType: DirectoryOrCreate
 
@@ -78,6 +73,10 @@ uploads:
     name: uploads-pvc
     size: 5Gi
     accessModes: ["ReadWriteMany"]
-    storageClassName: ""
-    volumeName: ""
   mountPath: /app/tmp/uploads
+
+worker:
+  image:
+    repository: kartikeyavashishtha/b-log-worker
+    tag: latest
+    pullPolicy: Always

@@ -1,4 +1,3 @@
-# templates/_helpers.tpl
 {{- define "b_log.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -20,7 +19,7 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
 {{- end -}}
 
 {{- define "b_log.postgresql.host" -}}
-{{ printf "%s-postgresql" .Release.Name }}
+{{ printf "%s-postgresql-ha-pgpool" .Release.Name }}
 {{- end -}}
 
 {{- define "b_log.nats.host" -}}
@@ -28,13 +27,13 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
 {{- end -}}
 
 {{- define "b_log.postgresql.conn" -}}
-{{- $u := .Values.postgresql.auth.username -}}
-{{- $p := .Values.postgresql.auth.password -}}
+{{- $pg := index .Values "postgresql-ha" "postgresql" -}}
+{{- $u := $pg.username -}}
+{{- $p := $pg.password -}}
 {{- $h := include "b_log.postgresql.host" . -}}
-{{- $d := .Values.postgresql.auth.database -}}
+{{- $d := $pg.database -}}
 {{ printf "%s:%s@%s:5432/%s" $u $p $h $d }}
 {{- end -}}
-
 
 {{/*
 Return the storageClassName for uploads PVC depending on pv.enabled.

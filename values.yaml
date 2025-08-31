@@ -1,21 +1,35 @@
-postgresql:
-  architecture: standalone
-  auth:
+postgresql-ha:
+  postgresql:
+    replicaCount: 3
     username: app
     password: apppass
-    postgresPassword: adminpass
     database: app
-  primary:
+    postgresPassword: adminpass
     persistence:
       enabled: true
       size: 5Gi
-      accessModes: [ReadWriteOnce]
+      accessModes:
+        - ReadWriteOnce
     resources:
       requests:
         cpu: 100m
         memory: 512Mi
       limits:
         memory: 1Gi
+    repmgrPassword: repmgrpass
+
+  pgpool:
+    replicaCount: 2
+    adminPassword: pgpooladmin
+    customUsers:
+      usernames: "app;postgres"
+      passwords: "apppass;adminpass"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
 
 nats:
   config:
@@ -32,10 +46,8 @@ nats:
     merge:
       jetstream:
         domain: prod
-
   natsBox:
     enabled: false
-
   promExporter:
     enabled: true
 
@@ -67,7 +79,6 @@ uploads:
     reclaimPolicy: Retain
     hostPath: /mnt/minikube-uploads
     hostPathType: DirectoryOrCreate
-
   pvc:
     enabled: true
     name: uploads-pvc

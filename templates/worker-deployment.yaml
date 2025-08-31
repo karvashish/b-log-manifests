@@ -19,6 +19,20 @@ spec:
         app.kubernetes.io/component: worker
     spec:
       terminationGracePeriodSeconds: 30
+      initContainers:
+        - name: wait-dns-pg
+          image: postgres:16
+          command: ["bash","-c"]
+          args:
+            - >
+              H="{{ include "b_log.postgresql.host" . }}.{{ .Release.Namespace }}.svc.cluster.local";
+              for i in $(seq 1 150); do
+                getent hosts "$H" >/dev/null 2>&1 &&
+                pg_isready -h "$H" -p 5432 >/dev/null 2>&1 && exit 0;
+                echo "waiting for postgres at $H:5432 ($i/150)";
+                sleep 2;
+              done;
+              echo "postgres did not become ready in time"; exit 1
       containers:
         - name: worker
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
